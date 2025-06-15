@@ -22,15 +22,23 @@ This Android application, titled "Wallin," allows users to browse and download w
 *   **Pull-to-Refresh**: Updates wallpaper content by refreshing the content.
 
 ## Screenshots
-![splash screen](app/images/splash.jpg) ![Home screen](app/images/homescreen.jpg) ![Empty favourites screen](app/images/empty%20refresh.jpg)
-
-
-![Favourites screen](app/images/full%20fav.jpg)
-![wallpaper screen](app/images/wallpaper.jpg)
-![search screen](app/images/search.jpg)
-![Searched screen](app/images/searced.jpg)
-
-
+<table>
+  <tr>
+    <td><img src="app/images/splash.jpg" alt="splash screen" width="100%"/></td>
+    <td><img src="app/images/homescreen.jpg" alt="Home screen" width="100%"/></td>
+    <td><img src="app/images/empty%20refresh.jpg" alt="Empty favourites screen" width="100%"/></td>
+  </tr>
+  <tr>
+    <td><img src="app/images/full%20fav.jpg" alt="Favourites screen" width="100%"/></td>
+    <td><img src="app/images/wallpaper.jpg" alt="wallpaper screen" width="100%"/></td>
+    <td><img src="app/images/search.jpg" alt="search screen" width="100%"/></td>
+  </tr>
+  <tr>
+    <td colspan="3" align="center">
+      <img src="app/images/searced.jpg" alt="Searched screen" width="33%"/>
+    </td>
+  </tr>
+</table>
 
 
 ## Table of Contents
