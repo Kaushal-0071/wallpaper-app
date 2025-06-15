@@ -26,6 +26,12 @@ class favouriteViewmodel @Inject constructor(
         }
 
     }
+    fun refreshImages(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            getAllFavourites()
+            onComplete()
+        }
+    }
     init{
         getAllFavourites()
     }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -60,6 +61,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.wallpaper.R
 import com.example.wallpaper.data.model.BackendImageDto
 import com.example.wallpaper.presentation.components.ImagesVerticalGrid
 import com.example.wallpaper.presentation.theme.Background
@@ -91,7 +98,14 @@ fun SearchScreen(
 //            active = false                // collapse the search bar
 //                // clear any input focus
 //        }
+        val composition by rememberLottieComposition(
+            spec = LottieCompositionSpec.RawRes(R.raw.no_results)
+        )
 
+        val progress by animateLottieCompositionAsState(
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
 
         // Launch an effect once to install a LifecycleObserver
 
@@ -105,6 +119,7 @@ fun SearchScreen(
                     // For example, by filtering a list based on newQuery
                 },
                 onSearch = { searchQuery ->
+
                     // This is typically called when the user presses the search icon on the keyboard
                     active = false // Usually, you want to close the search bar after a search
                     viewModel.searchImages(searchQuery)
@@ -146,16 +161,25 @@ fun SearchScreen(
                     })
                 }
 
-            if(viewModel.images.isEmpty() && query.isNotEmpty() && !viewModel.success){
-             Text("fail")
-            }
+//            if(viewModel.images.isEmpty() && query.isNotEmpty() && !viewModel.success){
+//                Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+//                    LottieAnimation(
+//                        composition = composition,
+//                        progress = {
+//                            progress
+//                        }
+//                    )
+//                    Text("No Results", color = accent)
+//                }
+//            }
             if(viewModel.images.isNotEmpty() && viewModel.success){
                 ImagesVerticalGrid(
                     modifier = Modifier,
                     images = viewModel.images,
                     onImageClick =onImageClick,
                     sharedTransitionScope =sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope
+                    animatedVisibilityScope = animatedVisibilityScope,
+
                 )
             }
 
@@ -238,8 +262,9 @@ onChipClick(word)
             )
         }
     }
+    Spacer(Modifier.height(10.dp))
     Text("Search by Colors", color = Color.White , fontWeight = FontWeight.Bold)
-    Spacer(Modifier.padding(5.dp))
+
     ColorGrid(hexColors = colurs, onClick = onClick)
 
 }

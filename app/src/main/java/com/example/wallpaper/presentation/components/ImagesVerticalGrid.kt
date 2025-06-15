@@ -20,9 +20,15 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.FloatingToolbarExitDirection
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -41,6 +47,7 @@ fun ImagesVerticalGrid(
 
 ) {
 
+
         LazyVerticalStaggeredGrid(
             modifier = modifier.fillMaxSize(),
             columns = StaggeredGridCells.Adaptive(120.dp),
@@ -49,7 +56,10 @@ fun ImagesVerticalGrid(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
 
         ) {
-            items(count = images.size) { index ->
+            items(count = images.size,
+                key = { index -> images[index].id },
+
+            ) { index ->
                 val image = images[index]
                 ImageCard(
                     image = image,
@@ -61,4 +71,6 @@ fun ImagesVerticalGrid(
 
             }
         }
+
     }
+

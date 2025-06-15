@@ -2,6 +2,8 @@ package com.example.wallpaper.presentation.home_screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.fadeIn
@@ -29,9 +31,13 @@ import androidx.compose.material3.FloatingToolbarHorizontalFabPosition
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -39,7 +45,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -48,6 +56,7 @@ import com.example.wallpaper.data.model.BackendImageDto
 import com.example.wallpaper.presentation.components.ImagesVerticalGrid
 import com.example.wallpaper.presentation.theme.Background
 import com.example.wallpaper.presentation.theme.accent
+import com.example.wallpaper.presentation.theme.header
 import com.example.wallpaper.presentation.theme.icons
 import kotlinx.coroutines.delay
 import kotlin.math.abs
@@ -63,12 +72,16 @@ fun SharedTransitionScope.HomeScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     onFabClick: () -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onRefresh: () -> Unit,
+    refreshing:Boolean
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val fabscrollBehavior = FloatingToolbarDefaults.exitAlwaysScrollBehavior(
         FloatingToolbarExitDirection.End
     )
+    val state = rememberPullToRefreshState()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -76,7 +89,7 @@ fun SharedTransitionScope.HomeScreen(
 
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Wallpaper") },
+                title = { Text("Wallin", fontFamily = header) },
                 scrollBehavior = scrollBehavior,
 
                 actions = {
@@ -102,7 +115,13 @@ fun SharedTransitionScope.HomeScreen(
             HorizontalFloatingToolbar(
                 false,
                 floatingActionButton = {
-                    FloatingActionButton(onClick = onFabClick, modifier = Modifier.offset(20.dp,10.dp), containerColor = icons) {
+                    FloatingActionButton(onClick = onFabClick, modifier = Modifier.offset(20.dp,10.dp)
+
+
+                        ,
+                        containerColor = icons
+
+                    ) {
                         Icon(Icons.Filled.Favorite, "Add", tint = accent)
                     }
                 },
@@ -118,20 +137,39 @@ fun SharedTransitionScope.HomeScreen(
 
 
     ) { innerPadding ->
+        PullToRefreshBox(
+            state = state,
+            isRefreshing = refreshing,
+            onRefresh = onRefresh,
+            modifier =  Modifier.fillMaxSize().padding(innerPadding),
+            indicator = {
+             Indicator(
+                 state = state,
+                 modifier = Modifier.align(Alignment.TopCenter),
+                 isRefreshing = refreshing
 
-        ImagesVerticalGrid(
-            images = images,
+             )
 
-            modifier = Modifier
-                .padding(innerPadding)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .nestedScroll(fabscrollBehavior),
-            onImageClick = onImageClick,
-            sharedTransitionScope = sharedTransitionScope,
-            animatedVisibilityScope = animatedVisibilityScope
+            }
 
-        )
+        ) {
 
+
+            ImagesVerticalGrid(
+                images = images,
+
+
+                modifier = Modifier
+
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .nestedScroll(fabscrollBehavior),
+                onImageClick = onImageClick,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
+
+
+            )
+        }
 
     }
 }

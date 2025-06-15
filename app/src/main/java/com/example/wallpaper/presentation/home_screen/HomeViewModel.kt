@@ -21,7 +21,9 @@ class HomeViewModel @Inject constructor(
 
 
 ):ViewModel() {
-    var images:List<BackendImageDto> by mutableStateOf(emptyList())
+    var imagesapi:List<BackendImageDto> by mutableStateOf(emptyList())
+        private set
+    var imagesindao:List<BackendImageDto> by mutableStateOf(emptyList())
         private set
     private var imagesDao=localDatabase.backendImageDao()
 
@@ -33,14 +35,21 @@ class HomeViewModel @Inject constructor(
     }
     private suspend fun getImages(){
        val job= viewModelScope.launch {
-            images= apiService.getAllImages()
+           imagesapi= apiService.getAllImages()
 
         }
         job.join()
-        imagesDao.insertAllImages(images)
+        imagesDao.insertAllImages(imagesapi)
         viewModelScope.launch {
             val result=imagesDao.getAllImages()
-            images=result
+            imagesindao=result
+        }
+    }
+
+    fun refreshImages(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            getImages()
+            onComplete()
         }
     }
 }

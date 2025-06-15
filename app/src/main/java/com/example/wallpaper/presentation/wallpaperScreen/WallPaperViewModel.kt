@@ -58,6 +58,7 @@ class WallPaperViewModel@Inject constructor(
 ):ViewModel() {
     private val imagesDao=localDatabase.backendImageDao()
     private val favoriteImageDao=localDatabase.FavoriteImageDao()
+    var isSettingWallpaper:Boolean by mutableStateOf(false)
     var image:BackendImageDto by mutableStateOf(BackendImageDto("","",0,"","","",0))
         private set
     val favouriteImageIds: StateFlow<List<String>> = favoriteImageDao.getImageIds().stateIn(
@@ -67,19 +68,8 @@ class WallPaperViewModel@Inject constructor(
     )
 
 
-    var state by mutableStateOf(WallpaperScreenState())
-        private set
 
-    // For events like showing a toast
-    private val _showDownloadToast = MutableStateFlow(false)
-    val showDownloadToast: StateFlow<Boolean> = _showDownloadToast.asStateFlow()
 
-    // ... rest of your ViewModel (including persistImage, downloadImageFromUrl1)
-
-    // You might also want a function to reset the toast state after it's shown
-    fun onDownloadToastShown() {
-        _showDownloadToast.value = false
-    }
 
 
     var Isdark:Boolean by mutableStateOf(false)
@@ -129,9 +119,11 @@ class WallPaperViewModel@Inject constructor(
 
 
     fun applywallpaper(context:Context,url:String,place:String){
+
         val wallpaperManager = WallpaperManager.getInstance(context)
         try{
         viewModelScope.launch {
+            isSettingWallpaper=true
             val task= async(Dispatchers.IO){
                 BitmapFactory.decodeStream(
                     URL(url).openConnection().getInputStream()
@@ -147,10 +139,12 @@ class WallPaperViewModel@Inject constructor(
             else{
                 wallpaperManager.setBitmap(bitmap)
             }
+            isSettingWallpaper=false
 
         }
         }
         catch (e:Exception){
+            isSettingWallpaper=false
             e.printStackTrace()
         }
     }

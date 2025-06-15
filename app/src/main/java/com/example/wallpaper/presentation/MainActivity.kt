@@ -5,6 +5,10 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
@@ -26,8 +30,10 @@ class MainActivity : ComponentActivity() {
             WallpaperTheme {
                 val viewModel: HomeViewModel = hiltViewModel()
                 val navController = rememberNavController()
+                var refreshing by remember { mutableStateOf(false) }
+
                 NavGraphSetup(
-                    navController = navController, viewModel.images, onImageClick = { it ->
+                    navController = navController, viewModel.imagesindao, onImageClick = { it ->
                         val encodedUrl = URLEncoder.encode(it, StandardCharsets.UTF_8.toString())
                         navController.navigate(Routes.WALLPAPER_SCREEN + "/$encodedUrl")
                     },
@@ -38,7 +44,17 @@ class MainActivity : ComponentActivity() {
                     onSearchClick = {
                         navController.navigate(Routes.SEARCH_SCREEN)
 
-                    })
+                    }
+
+                ,
+                    onRefresh = {
+                        refreshing = true
+                        viewModel.refreshImages {
+                            refreshing = false
+                        }
+
+                    },
+                    refreshing = refreshing)
 
             }
         }

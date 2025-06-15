@@ -20,7 +20,9 @@ fun NavGraphSetup(
     images:List<BackendImageDto>,
     onImageClick: (String) -> Unit,
     onFabClick: () -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onRefresh: () -> Unit,
+    refreshing:Boolean
 ){
 
 
@@ -33,8 +35,10 @@ SharedTransitionLayout {
             sharedTransitionScope = this@SharedTransitionLayout,
             animatedVisibilityScope = this,
             onFabClick=onFabClick,
+            onRefresh = onRefresh,
 
-            onSearchClick = onSearchClick
+            onSearchClick = onSearchClick,
+            refreshing = refreshing
 
            )
        }

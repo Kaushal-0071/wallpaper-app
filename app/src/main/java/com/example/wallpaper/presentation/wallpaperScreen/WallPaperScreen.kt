@@ -58,6 +58,7 @@ import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
 
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -76,8 +77,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.font.FontWeight
@@ -149,15 +152,25 @@ fun SharedTransitionScope.WallPaperScreen(url :String,
         .build()
     val uriHandler = LocalUriHandler.current
 
-    val showToast by viewModel.showDownloadToast.collectAsState()
+
     // val screenState = viewModel.state // You'd also observe this
 
-    LaunchedEffect(showToast) {
-        if (showToast) {
-            Toast.makeText(context, "Image Downloaded!", Toast.LENGTH_SHORT).show()
-            viewModel.onDownloadToastShown() // Reset the event
+    val haptic = LocalHapticFeedback.current
+
+    // Track previous state to detect change
+    var prevLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(viewModel.isSettingWallpaper) {
+        if (prevLoading && !viewModel.isSettingWallpaper) {
+            Toast.makeText(context, "Wallpaper set", Toast.LENGTH_SHORT).show()
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
+        prevLoading =viewModel.isSettingWallpaper
     }
+
+
+
+ 
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
 
 
@@ -252,7 +265,16 @@ fun SharedTransitionScope.WallPaperScreen(url :String,
                             Icon(Icons.Rounded.ArrowCircleDown, contentDescription = "Localized description", tint = accent)
                         }
                         IconButton(onClick = { isWallpaperSheetOpen=!isWallpaperSheetOpen }) {
-                            Icon(Icons.Rounded.CheckCircle, contentDescription = "Localized description", tint = accent)
+                            if(viewModel.isSettingWallpaper){
+                                LoadingIndicator()
+                            }
+
+                            else{
+
+
+                                Icon(Icons.Rounded.CheckCircle, contentDescription = "Localized description", tint = accent)
+
+                            }
                         }
                         IconButton(onClick = { viewModel.toggleFavourite(Image) }) {
                             if(favids.contains(Image.id)){ Icon(Icons.Filled.Favorite, contentDescription = "Localized description", tint = accent)}

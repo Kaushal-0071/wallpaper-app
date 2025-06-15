@@ -60,6 +60,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.animation)
+    implementation(libs.lottie.compose)
+    implementation(libs.androidx.ui.text.google.fonts)
 
 
 
