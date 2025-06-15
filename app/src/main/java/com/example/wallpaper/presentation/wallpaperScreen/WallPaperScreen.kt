@@ -51,6 +51,8 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingToolbarDefaults
 import androidx.compose.material3.FloatingToolbarDefaults.ScreenOffset
+import androidx.compose.material3.FloatingToolbarDefaults.standardFloatingToolbarColors
+import androidx.compose.material3.FloatingToolbarDefaults.vibrantFloatingToolbarColors
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
@@ -92,6 +94,9 @@ import coil.memory.MemoryCache
 import coil.request.ImageRequest
 import com.example.wallpaper.data.local.toFavouriteImageDto
 import com.example.wallpaper.data.model.FavouriteImageDto
+import com.example.wallpaper.presentation.theme.Background
+import com.example.wallpaper.presentation.theme.accent
+import com.example.wallpaper.presentation.theme.icons
 import com.example.wallpaper.presentation.util.AndroidDownloader
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
@@ -237,22 +242,22 @@ fun SharedTransitionScope.WallPaperScreen(url :String,
                     expanded = true,
                     modifier =
                         Modifier,
-                    colors = vibrantColors,
+                    colors = standardFloatingToolbarColors(toolbarContainerColor = icons),
                     content = {
 
                         IconButton(onClick = { downloader.downloadFile(
                             url = Image.url,
                             title = Image.name
                         ) }) {
-                            Icon(Icons.Rounded.ArrowCircleDown, contentDescription = "Localized description")
+                            Icon(Icons.Rounded.ArrowCircleDown, contentDescription = "Localized description", tint = accent)
                         }
                         IconButton(onClick = { isWallpaperSheetOpen=!isWallpaperSheetOpen }) {
-                            Icon(Icons.Rounded.CheckCircle, contentDescription = "Localized description")
+                            Icon(Icons.Rounded.CheckCircle, contentDescription = "Localized description", tint = accent)
                         }
                         IconButton(onClick = { viewModel.toggleFavourite(Image) }) {
-                            if(favids.contains(Image.id)){ Icon(Icons.Filled.Favorite, contentDescription = "Localized description")}
+                            if(favids.contains(Image.id)){ Icon(Icons.Filled.Favorite, contentDescription = "Localized description", tint = accent)}
                             else{
-                                Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Localized description")
+                                Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Localized description", tint = accent)
                             }
 
                         }

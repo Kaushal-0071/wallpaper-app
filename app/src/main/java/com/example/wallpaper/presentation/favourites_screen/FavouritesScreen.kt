@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.wallpaper.presentation.components.ImagesVerticalGrid
+import com.example.wallpaper.presentation.theme.Background
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -29,14 +30,22 @@ fun FavouritesScreen(
     animatedVisibilityScope: AnimatedVisibilityScope
 ){
     val viewModel: favouriteViewmodel = hiltViewModel()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
         Scaffold (
+            containerColor = Background,
             topBar = {
                 CenterAlignedTopAppBar(title = {
                     Text("Favourites")
                 },
-                    scrollBehavior=scrollBehavior)
+                    scrollBehavior=scrollBehavior,
+                    colors=TopAppBarDefaults.topAppBarColors(
+                        containerColor = Background,
+                        scrolledContainerColor = Background
+                    )
+
+                )
+
             }
         ){ innerPadding ->
             ImagesVerticalGrid(

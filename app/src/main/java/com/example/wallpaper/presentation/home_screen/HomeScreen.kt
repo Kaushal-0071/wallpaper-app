@@ -28,6 +28,7 @@ import androidx.compose.material3.FloatingToolbarExitDirection
 import androidx.compose.material3.FloatingToolbarHorizontalFabPosition
 import androidx.compose.material3.HorizontalFloatingToolbar
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -40,10 +41,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.example.wallpaper.data.model.BackendImageDto
 import com.example.wallpaper.presentation.components.ImagesVerticalGrid
+import com.example.wallpaper.presentation.theme.Background
+import com.example.wallpaper.presentation.theme.accent
+import com.example.wallpaper.presentation.theme.icons
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 
@@ -67,6 +72,7 @@ fun SharedTransitionScope.HomeScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
+        containerColor = Background,
 
         topBar = {
             CenterAlignedTopAppBar(
@@ -74,13 +80,21 @@ fun SharedTransitionScope.HomeScreen(
                 scrollBehavior = scrollBehavior,
 
                 actions = {
-                    FilledIconButton(onSearchClick) {
+                    FilledIconButton(onSearchClick,
+                        colors = IconButtonColors(containerColor = accent, contentColor = icons, disabledContentColor = Color.DarkGray, disabledContainerColor = icons)
+                    ) {
                         Icon(
                             Icons.Default.Search,
                             contentDescription = null
+                            , tint = icons
                         )
                     }
                 }
+                ,
+                colors=TopAppBarDefaults.topAppBarColors(
+                    containerColor = Background,
+                    scrolledContainerColor = Background
+                )
             )
         },
         floatingActionButton = {
@@ -88,13 +102,13 @@ fun SharedTransitionScope.HomeScreen(
             HorizontalFloatingToolbar(
                 false,
                 floatingActionButton = {
-                    FloatingActionButton(onClick = onFabClick, modifier = Modifier.offset(20.dp,10.dp)) {
-                        Icon(Icons.Filled.Favorite, "Add")
+                    FloatingActionButton(onClick = onFabClick, modifier = Modifier.offset(20.dp,10.dp), containerColor = icons) {
+                        Icon(Icons.Filled.Favorite, "Add", tint = accent)
                     }
                 },
                 scrollBehavior = fabscrollBehavior,
                 collapsedShadowElevation = 0.dp,
-                floatingActionButtonPosition = FloatingToolbarHorizontalFabPosition.End,
+                floatingActionButtonPosition = FloatingToolbarHorizontalFabPosition.End
 
                 ) {
 

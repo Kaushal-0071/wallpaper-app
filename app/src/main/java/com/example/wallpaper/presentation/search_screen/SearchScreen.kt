@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -49,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
@@ -59,6 +62,10 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.wallpaper.data.model.BackendImageDto
 import com.example.wallpaper.presentation.components.ImagesVerticalGrid
+import com.example.wallpaper.presentation.theme.Background
+import com.example.wallpaper.presentation.theme.accent
+import com.example.wallpaper.presentation.theme.icons
+import com.example.wallpaper.presentation.theme.search
 import com.example.wallpaper.presentation.util.colurs
 import com.example.wallpaper.presentation.util.creators
 import com.example.wallpaper.presentation.wallpaperScreen.WallPaperViewModel
@@ -71,7 +78,7 @@ fun SearchScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
 ){
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+    Box(modifier = Modifier.fillMaxSize().background(Background), contentAlignment = Alignment.Center){
         // State for the search query
         var query by remember { mutableStateOf("") }
         // State for managing the active state of the search bar
@@ -139,7 +146,7 @@ fun SearchScreen(
                     })
                 }
 
-            if(viewModel.images.isEmpty() && query.isNotEmpty() && viewModel.success==false){
+            if(viewModel.images.isEmpty() && query.isNotEmpty() && !viewModel.success){
              Text("fail")
             }
             if(viewModel.images.isNotEmpty() && viewModel.success){
@@ -189,7 +196,7 @@ fun MySearchBar(
                     placeholder = { Text(placeholderText) },
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
-                    colors = colors1.inputFieldColors,
+                    colors =SearchBarDefaults.inputFieldColors(focusedContainerColor = search, unfocusedContainerColor = search),
                 )
             },
             expanded = false,
@@ -218,8 +225,8 @@ fun SearchPreview(
     ) {
 Column (modifier = Modifier.fillMaxSize()){
 
-    Icon(Icons.Default.Search, contentDescription = "", modifier = Modifier.size(100.dp).align(Alignment.CenterHorizontally))
-    Text("Search by Creators")
+    Icon(Icons.Default.Search, contentDescription = "", modifier = Modifier.size(100.dp).align(Alignment.CenterHorizontally), tint = icons)
+    Text("Search by Creators", color = Color.White,fontWeight = FontWeight.Bold)
     LazyRow {
         items(creators){ word->
             SuggestionChip(
@@ -231,7 +238,8 @@ onChipClick(word)
             )
         }
     }
-    Text("Search by Colors")
+    Text("Search by Colors", color = Color.White , fontWeight = FontWeight.Bold)
+    Spacer(Modifier.padding(5.dp))
     ColorGrid(hexColors = colurs, onClick = onClick)
 
 }
